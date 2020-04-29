@@ -2729,8 +2729,10 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ex
       $summe = $maxgrp+$grp+$trainer;
       error_log("summe: ".$summe);
 
+      error_log($summe." > ".$config->MAX_REMOTE);
       if($summe > $config->MAX_REMOTE)
       {
+        error_log("cancel");
         answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
         die();
       }
