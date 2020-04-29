@@ -1944,27 +1944,7 @@ function keys_vote($raid)
         ]
     ];
 
-    // Team and level keys.
-    if($config->RAID_POLL_HIDE_BUTTONS_TEAM_LVL) {
-        $buttons_teamlvl = [];
-    } else {
-        $buttons_teamlvl = [
-            [
-                [
-                    'text'          => 'Team',
-                    'callback_data' => $raid['id'] . ':vote_team:0'
-                ],
-                [
-                    'text'          => 'Lvl +',
-                    'callback_data' => $raid['id'] . ':vote_level:up'
-                ],
-                [
-                    'text'          => 'Lvl -',
-                    'callback_data' => $raid['id'] . ':vote_level:down'
-                ]
-            ]
-        ];
-    }
+
 
     // Ex-Raid Invite key
     $button_invite = [
@@ -2001,6 +1981,28 @@ function keys_vote($raid)
         $text_done = getPublicTranslation('done');
 		$text_done = getPublicTranslation('remote');
         $text_cancel = getPublicTranslation('cancellation');
+    }
+
+    // Team and level keys.
+    if($config->RAID_POLL_HIDE_BUTTONS_TEAM_LVL) {
+        $buttons_teamlvl = [];
+    } else {
+        $buttons_teamlvl = [
+            [
+                [
+                    'text'          => 'Team',
+                    'callback_data' => $raid['id'] . ':vote_team:0'
+                ],
+                [
+                    'text'          => 'Lvl +',
+                    'callback_data' => $raid['id'] . ':vote_level:up'
+                ],
+                [
+                    'text'          => 'Lvl -',
+                    'callback_data' => $raid['id'] . ':vote_level:down'
+                ]
+            ]
+        ];
     }
 
     // Status keys.
