@@ -2688,10 +2688,10 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ne
   $pkm = [];
   while ($ra = $rs->fetch_assoc())
   {
-    
+
       if($attendtime == '')
         $attendtime = $ra['attend_time'];
-      e
+      
       $extra = $ra['extras']+$newextra;
       array_push($pkm, $ra['pokemon']);
 
