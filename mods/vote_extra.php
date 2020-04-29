@@ -40,7 +40,7 @@ if (!empty($answer)) {
         );
     } else {
       if($answer['remote'] == 1)
-        checkRemote($update['callback_query']['from']['id'], $data['id'], $answer['attend_time'],$update['callback_query']['id'],1);
+        checkRemote($update['callback_query']['id'], $update['callback_query']['from']['id'], $data['id'], '', '', 1);
         // Get team.
         $team = 'extra_' . $data['arg'];
         alarm($data['id'],$update['callback_query']['from']['id'],'extra',$data['arg']);

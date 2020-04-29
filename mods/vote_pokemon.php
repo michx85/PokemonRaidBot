@@ -27,7 +27,7 @@ while ($row = $rs->fetch_assoc()) {
 }
 
 if($answer['remote'] == 1)
-  checkRemote($update['callback_query']['from']['id'], $data['id'], $attend_time,$update['callback_query']['id'],0);
+  checkRemote($update['callback_query']['id'], $update['callback_query']['from']['id'], $data['id'], '',$data['arg']);
 
 // Write to log.
 debug_log($atts);

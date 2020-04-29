@@ -2668,27 +2668,61 @@ function send_vote_time_first($update)
  * Check if too much remote Raiders.
  * @param $update
  */
-function checkRemote($user, $raid, $attendtime,$cbi, $plus = 0, $pokemon = 0)
+function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra = 0)
 {
   global $config;
-  // Eigene Anzahl an Trainerinfo
-  $cnt_rt_self = my_query("SELECT 1+extra_mystic+extra_valor+extra_instinct AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND user_id = 370365060 LIMIT 1");
-  $rt_self_answer = $cnt_rt_self->fetch_assoc();
-  if($pokemon == 0)
-    $cnt_rt_pkm = my_query("SELECT MAX(cnt) AS cnt FROM (SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon <> 0 AND attend_time = '2020-04-29 14:15:00' GROUP by pokemon) AS p");
-  else
-    $cnt_rt_pkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon = '9-normal' AND attend_time = '2020-04-29 14:15:00'");"
-  $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
-  // Anzahl in alle pokemon
-  $cnt_rt_allpkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon = 0 AND attend_time = '2020-04-29 14:15:00'");
-  $rt_allpkm_answer = $cnt_rt_allpkm->fetch_assoc();
 
-  $sum = $rt_self_answer->cnt+$rt_pkm_answer->cnt+$rt_allpkm_answer->cnt;
+  // Aktuelle Daten ermitteln
+  $rs = my_query(
+      "
+      SELECT    attend_time, pokemon, extra_mystic+extra_valor+extra_instinct AS extras
+      FROM      attendance
+        WHERE   raid_id = {$raid}
+          AND   user_id = {$user}
+      "
+  );
 
-  if($sum > $config->MAX_REMOTE)
+  // Zielwerte ermitteln (Pokemon, Zeit und Extras)
+  $raidanswer = $rs->fetch_assoc();
+  $pkm = [];
+  foreach ($raidanswer AS $ra)
   {
-    answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
-    die();
+      if($attendtime != '')
+        $attendtime = $ra->attend_time;
+
+      $extra += $ra->extras;
+      array_push($pkm, $ra->pokemon);
+  }
+  array_push($pkm, $pokemon);
+  // sich selbst mitzählen
+  $trainer = 1 + $extra;
+
+  // Für jedes Pokemon die Anzahl prüfen
+  foreach($pkm AS $p)
+  {
+      // Wenn man in "jedes Pokemon" will
+      if($p == 0)
+      {
+        $cnt_rt_pkm = my_query("SELECT MAX(cnt) AS cnt FROM (SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND pokemon <> 0 AND user_id <> '{$user}' AND  raid_id = {$raid} AND attend_time = '{$attendtime}' GROUP by pokemon) AS p");
+        $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
+        // Anzahl der trainer in der gröchsten pokemon Gruppe
+        $maxgrp = $rt_pkm_answer->cnt;
+      }
+      else {
+          $maxgrp = 0;
+      }
+      // Anzahl der Trainer in der Gruppe in die man rein will
+      $cnt_rt_pkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = {$raid} AND attend_time = '{$attendtime}' AND pokemon = '{$p}'");
+      $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
+      $grp = $rt_pkm_answer->cnt;
+
+      $summe = $maxgrp+$grp+$trainer;
+
+      if($sum > $config->MAX_REMOTE)
+      {
+        answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
+        die();
+      }
   }
 }
 
