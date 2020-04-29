@@ -2672,6 +2672,7 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
 {
   global $config;
 
+  error_log("Start Remote Check");
   // Aktuelle Daten ermitteln
   $rs = my_query(
       "
@@ -2696,6 +2697,10 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
   array_push($pkm, $pokemon);
   // sich selbst mitzählen
   $trainer = 1 + $extra;
+  error_log("Trainer: ".$trainer);
+  error_log("Zeit: ".$attendtime);
+  error_log("PKM: ".json_encode($pkm));
+
 
   // Für jedes Pokemon die Anzahl prüfen
   foreach($pkm AS $p)
@@ -2711,12 +2716,14 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
       else {
           $maxgrp = 0;
       }
+      error_log("maxgrp: ".$maxgrp);
       // Anzahl der Trainer in der Gruppe in die man rein will
       $cnt_rt_pkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = {$raid} AND attend_time = '{$attendtime}' AND pokemon = '{$p}'");
       $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
       $grp = $rt_pkm_answer->cnt;
-
+      error_log("grp: ".$grp);
       $summe = $maxgrp+$grp+$trainer;
+      error_log("summe: ".$summe);
 
       if($sum > $config->MAX_REMOTE)
       {
