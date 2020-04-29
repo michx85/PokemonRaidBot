@@ -1918,33 +1918,29 @@ function keys_vote($raid)
 
 
 
-    // Extra Keys
-    $buttons_extra = [
-        [
-            [
-                'text'          => getPublicTranslation('alone'),
-                'callback_data' => $raid['id'] . ':vote_extra:0'
-            ],
-            [
-                'text'          => '+ ' . TEAM_B,
-                'callback_data' => $raid['id'] . ':vote_extra:mystic'
-            ],
-            [
-                'text'          => '+ ' . TEAM_R,
-                'callback_data' => $raid['id'] . ':vote_extra:valor'
-            ],
-            [
-                'text'          => '+ ' . TEAM_Y,
-                'callback_data' => $raid['id'] . ':vote_extra:instinct'
-            ],
-            [
-                'text'          => $text_remote,
-                'callback_data' => $raid['id'] . ':vote_status:remote'
-            ],
-        ]
-    ];
 
 
+    // Team and level keys.
+    if($config->RAID_POLL_HIDE_BUTTONS_TEAM_LVL) {
+        $buttons_teamlvl = [];
+    } else {
+        $buttons_teamlvl = [
+            [
+                [
+                    'text'          => 'Team',
+                    'callback_data' => $raid['id'] . ':vote_team:0'
+                ],
+                [
+                    'text'          => 'Lvl +',
+                    'callback_data' => $raid['id'] . ':vote_level:up'
+                ],
+                [
+                    'text'          => 'Lvl -',
+                    'callback_data' => $raid['id'] . ':vote_level:down'
+                ]
+            ]
+        ];
+    }
 
     // Ex-Raid Invite key
     $button_invite = [
@@ -1983,27 +1979,31 @@ function keys_vote($raid)
         $text_cancel = getPublicTranslation('cancellation');
     }
 
-    // Team and level keys.
-    if($config->RAID_POLL_HIDE_BUTTONS_TEAM_LVL) {
-        $buttons_teamlvl = [];
-    } else {
-        $buttons_teamlvl = [
+    // Extra Keys
+    $buttons_extra = [
+        [
             [
-                [
-                    'text'          => 'Team',
-                    'callback_data' => $raid['id'] . ':vote_team:0'
-                ],
-                [
-                    'text'          => 'Lvl +',
-                    'callback_data' => $raid['id'] . ':vote_level:up'
-                ],
-                [
-                    'text'          => 'Lvl -',
-                    'callback_data' => $raid['id'] . ':vote_level:down'
-                ]
-            ]
-        ];
-    }
+                'text'          => getPublicTranslation('alone'),
+                'callback_data' => $raid['id'] . ':vote_extra:0'
+            ],
+            [
+                'text'          => '+ ' . TEAM_B,
+                'callback_data' => $raid['id'] . ':vote_extra:mystic'
+            ],
+            [
+                'text'          => '+ ' . TEAM_R,
+                'callback_data' => $raid['id'] . ':vote_extra:valor'
+            ],
+            [
+                'text'          => '+ ' . TEAM_Y,
+                'callback_data' => $raid['id'] . ':vote_extra:instinct'
+            ],
+            [
+                'text'          => $text_remote,
+                'callback_data' => $raid['id'] . ':vote_status:remote'
+            ],
+        ]
+    ];
 
     // Status keys.
     $buttons_status = [
