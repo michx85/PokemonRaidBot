@@ -2671,11 +2671,20 @@ function send_vote_time_first($update)
 function checkRemote($user, $raid, $attendtime,$cbi, $plus = 0, $pokemon = 0)
 {
   global $config;
+  // Eigene Anzahl an Trainerinfo
+  $cnt_rt_self = my_query("SELECT 1+extra_mystic+extra_valor+extra_instinct AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND user_id = 370365060 LIMIT 1");
+  $rt_self_answer = $cnt_rt_self->fetch_assoc();
+  if($pokemon == 0)
+    $cnt_rt_pkm = my_query("SELECT MAX(cnt) AS cnt FROM (SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon <> 0 AND attend_time = '2020-04-29 14:15:00' GROUP by pokemon) AS p");
+  else
+    $cnt_rt_pkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon = '9-normal' AND attend_time = '2020-04-29 14:15:00'");"
+  $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
+  // Anzahl in alle pokemon
+  $cnt_rt_allpkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = 140 AND pokemon = 0 AND attend_time = '2020-04-29 14:15:00'");
+  $rt_allpkm_answer = $cnt_rt_allpkm->fetch_assoc();
 
-  $cnt_remote = my_query("SELECT MAX(cnt_remote) AS cnt_remote FROM (SELECT SUM(extra_mystic)+SUM(extra_valor)+SUM(extra_instinct)+SUM(remote) AS cnt_remote FROM attendance WHERE (raid_id = {$raid} AND remote = 1 AND attend_time = '{$attendtime}') OR (raid_id = {$raid} AND user_id = {$user}) GROUP by pokemon) AS p ");
+  $sum = $rt_self_answer->cnt+$rt_pkm_answer->cnt+$rt_allpkm_answer->cnt;
 
-  $countanswer = $cnt_remote->fetch_assoc();
-  $sum = $countanswer['cnt_remote']+$plus ;
   if($sum > $config->MAX_REMOTE)
   {
     answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
