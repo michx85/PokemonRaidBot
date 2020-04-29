@@ -2672,7 +2672,7 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ne
 {
   global $config;
 
-  error_log("Start Remote Check".$attendtime);
+
   // Aktuelle Daten ermitteln
   $rs = my_query(
       "
@@ -2688,29 +2688,25 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ne
   $pkm = [];
   while ($ra = $rs->fetch_assoc())
   {
-    error_log("Zeit1".$attendtime);
+    
       if($attendtime == '')
         $attendtime = $ra['attend_time'];
-      error_log("Zeit2".$attendtime);
+      e
       $extra = $ra['extras']+$newextra;
       array_push($pkm, $ra['pokemon']);
-      error_log('data: '.json_encode($ra));
-      error_log("Extra-".$extra);
+
   }
   if($newpokemon != "")
     array_push($pkm, $newpokemon);
-  // sich selbst mitzählen
-  error_log("Extra".$extra);
+
+// sich selbst mitzählen
   $trainer = 1 + $extra;
-  error_log("Trainer: ".$trainer);
-  error_log("Zeit: ".$attendtime);
-  error_log("PKM: ".json_encode($pkm));
 
 
-  // Für jedes Pokemon die Anzahl prüfen
+// Prüfen für jede Pokemonteilnehmerliste
   foreach($pkm AS $p)
   {
-      // Wenn man in "jedes Pokemon" will
+    // Wenn man bei jedem Raidboss mitmachen will, muss die Pokemonteilnehmerliste mit den meisten Fernraidern ermittelt werden
       if($p == 0)
       {
         $cnt_rt_pkm = my_query("SELECT MAX(cnt) AS cnt FROM (SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND pokemon <> 0 AND user_id <> '{$user}' AND  raid_id = {$raid} AND attend_time = '{$attendtime}' GROUP by pokemon) AS p");
@@ -2721,20 +2717,19 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ne
       else {
           $maxgrp = 0;
       }
-      error_log("maxgrp: ".$maxgrp);
-      // Anzahl der Trainer in der Gruppe in die man rein will
-      error_log($raid."-".$attendtime."-".$p);
+
+      // Teilnehmergröße ermitteln
       $cnt_rt_pkm = my_query("SELECT SUM(1+extra_mystic+extra_valor+extra_instinct) AS cnt FROM attendance WHERE remote = 1 AND raid_id = {$raid} AND attend_time = '{$attendtime}' AND user_id <> '{$user}' AND pokemon = '{$p}'");
       $rt_pkm_answer = $cnt_rt_pkm->fetch_assoc();
       $grp = $rt_pkm_answer['cnt'];
-      error_log("grp: ".$grp);
-      $summe = $maxgrp+$grp+$trainer;
-      error_log("summe: ".$summe);
 
-      error_log($summe." > ".$config->MAX_REMOTE);
+      //Alles zusammenrechnen
+      $summe = $maxgrp+$grp+$trainer;
+
+
+      // Wenn die Zielwerte zu viele Fernraider erreichen
       if($summe > $config->MAX_REMOTE)
       {
-        error_log("cancel");
         answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
         die();
       }
