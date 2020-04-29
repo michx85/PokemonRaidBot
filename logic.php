@@ -2684,9 +2684,9 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
   );
 
   // Zielwerte ermitteln (Pokemon, Zeit und Extras)
-  $raidanswer = $rs->fetch_assoc();
+
   $pkm = [];
-  foreach ($raidanswer AS $ra)
+  while ($ra = $rs->fetch_assoc())
   {
       if($attendtime == '')
         $attendtime = $ra->attend_time;
