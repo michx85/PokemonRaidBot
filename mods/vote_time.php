@@ -41,7 +41,7 @@ $now = new DateTime('now', new DateTimeZone('UTC'));
 $now = $now->format('Y-m-d H:i') . ':00';
 
 if($answer['remote'] == 1)
-  checkRemote($update['callback_query']['from']['id'], $data['id'], $attend_time,$update['callback_query']['id'],0);
+  checkRemote($update['callback_query']['id'], $update['callback_query']['from']['id'], $data['id'], $attendtime);
 // Vote time in the future or Raid anytime?
 if($now <= $attend_time || $arg == 0) {
     // User has voted before.

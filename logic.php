@@ -2691,13 +2691,15 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ex
       if($attendtime == '')
         $attendtime = $ra['attend_time'];
 
-      $extra += $ra['extras'];
+      $extra = $ra['extras'];
       array_push($pkm, $ra['pokemon']);
       error_log('data: '.json_encode($ra));
+      error_log("Extra-".$extra);
   }
   if($newpokemon != "")
     array_push($pkm, $newpokemon);
   // sich selbst mitzählen
+  error_log("Extra".$extra);
   $trainer = 1 + $extra;
   error_log("Trainer: ".$trainer);
   error_log("Zeit: ".$attendtime);
