@@ -22,6 +22,9 @@ defined('EMOJI_CLOCK')		or define('EMOJI_CLOCK',   iconv('UCS-4LE', 'UTF-8', pac
 defined('EMOJI_CAMERA')		or define('EMOJI_CAMERA',  iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F4F7)));
 defined('EMOJI_ALARM')		or define('EMOJI_ALARM',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F514)));
 defined('EMOJI_NO_ALARM')	or define('EMOJI_NO_ALARM',iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F515)));
+defined('EMOJI_REMOTE')		or define('EMOJI_REMOTE',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F52D)));
+defined('EMOJI_PLUS')		or define('EMOJI_PLUS',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x2795)));
+defined('EMOJI_WALK')		or define('EMOJI_WALK',   iconv('UCS-4LE', 'UTF-8', pack('V', 0x1F637)));
 
 // Weather Icons.
 defined('EMOJI_W_SUNNY') 		or define('EMOJI_W_SUNNY',            iconv('UCS-4LE', 'UTF-8', pack('V', 0x2600)));

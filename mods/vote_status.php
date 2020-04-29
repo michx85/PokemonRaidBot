@@ -9,7 +9,7 @@ debug_log('vote_status()');
 // Check if the user has voted for this raid before.
 $rs = my_query(
     "
-    SELECT    user_id
+    SELECT    user_id, attend_time, remote
     FROM      attendance
       WHERE   raid_id = {$data['id']}
         AND   user_id = {$update['callback_query']['from']['id']}
@@ -17,19 +17,19 @@ $rs = my_query(
 );
 
 // Get the answer.
-$answer = $rs->fetch_assoc();
+$raidanswer = $rs->fetch_assoc();
 
 // Write to log.
-debug_log($answer);
+debug_log($raidanswer);
 
 // Make sure user has voted before.
-if (!empty($answer)) {
+if (!empty($raidanswer)) {
     // Get status to update
     $status = $data['arg'];
     alarm($data['id'],$update['callback_query']['from']['id'],'status',$status);
     // Update attendance.
     if($status == 'alarm') {
-        // Enable / Disable alarm 
+        // Enable / Disable alarm
         my_query(
         "
         UPDATE attendance
@@ -68,6 +68,61 @@ if (!empty($answer)) {
 	}
         $msg_text .= EMOJI_HERE . SP . $gymname . SP . '(' . $raidtimes . ')';
         sendmessage($update['callback_query']['from']['id'], $msg_text);
+    } else if($status == 'remote'){
+
+
+      if($raidanswer['remote'] == 0)
+        checkRemote($update['callback_query']['from']['id'], $data['id'], $raidanswer['attend_time'],$update['callback_query']['id'],1);
+
+        // All other status-updates are using the short query
+        my_query(
+	"
+        UPDATE  attendance
+        SET
+                raid_done = 0,
+                cancel = 0,
+                $status = CASE
+                      WHEN $status = '0' THEN '1'
+                      ELSE '0'
+                      END
+        WHERE   raid_id = {$data['id']}
+        AND     user_id = {$update['callback_query']['from']['id']}
+        "
+        );
+      } else if($status == 'arrived'){
+          // All other status-updates are using the short query
+          my_query(
+    "
+          UPDATE  attendance
+          SET
+                  raid_done = 0,
+                  cancel = 0,
+                  late = 0,
+                  $status = CASE
+                        WHEN $status = '0' THEN '1'
+                        ELSE '0'
+                        END
+          WHERE   raid_id = {$data['id']}
+          AND     user_id = {$update['callback_query']['from']['id']}
+          "
+          );
+        } else if($status == 'late'){
+            // All other status-updates are using the short query
+            my_query(
+      "
+            UPDATE  attendance
+            SET
+                    raid_done = 0,
+                    cancel = 0,
+                    arrived = 0,
+                    $status = CASE
+                          WHEN $status = '0' THEN '1'
+                          ELSE '0'
+                          END
+            WHERE   raid_id = {$data['id']}
+            AND     user_id = {$update['callback_query']['from']['id']}
+            "
+            );
     } else {
         // All other status-updates are using the short query
         my_query(
@@ -85,7 +140,7 @@ if (!empty($answer)) {
     }
 
    // Send vote response.
-   if($config->RAID_PICTURE) {
+     if($config->RAID_PICTURE) {
        send_response_vote($update, $data,false,false);
     } else {
        send_response_vote($update, $data);

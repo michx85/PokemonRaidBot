@@ -9,7 +9,7 @@ debug_log('vote()');
 // Check if the user has voted for this raid before.
 $rs = my_query(
     "
-    SELECT    user_id
+    SELECT    user_id, attend_time, remote
     FROM      attendance
       WHERE   raid_id = {$data['id']}
         AND   user_id = {$update['callback_query']['from']['id']}
@@ -39,6 +39,8 @@ if (!empty($answer)) {
             "
         );
     } else {
+      if($answer['remote'] == 1)
+        checkRemote($update['callback_query']['from']['id'], $data['id'], $answer['attend_time'],$update['callback_query']['id'],1);
         // Get team.
         $team = 'extra_' . $data['arg'];
         alarm($data['id'],$update['callback_query']['from']['id'],'extra',$data['arg']);

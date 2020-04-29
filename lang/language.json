@@ -203,6 +203,18 @@
     "PL": "Spóźnie się",
     "FI": "Myöhässä"
   },
+  "remote": {
+    "NL": "TRANSLATE",
+    "DE": "Fernraid",
+    "EN": "Remote",
+    "IT": "TRANSLATE",
+    "PT-BR": "TRANSLATE",
+    "RU": "TRANSLATE",
+    "NO": "TRANSLATE",
+    "FR": "TRANSLATE",
+    "PL": "TRANSLATE",
+    "FI": "TRANSLATE"
+  },
   "cancellation": {
     "NL": "Afwezig",
     "DE": "Absage",
@@ -2566,5 +2578,41 @@
     "FR": "TRANSLATE",
     "PL": "TRANSLATE",
     "FI": "Ei ylimääräisiä kouluttajia!"
+  },
+  "max_remote": {
+    "NL": "TRANSLATE",
+    "DE": "Die maximale Anzahl an Fernraids ist erreicht: ",
+    "EN": "The maximum number of remote raiders has been reached: ",
+    "IT": "TRANSLATE",
+    "PT-BR": "TRANSLATE",
+    "RU": "TRANSLATE",
+    "NO": "TRANSLATE",
+    "FR": "TRANSLATE",
+    "PL": "TRANSLATE",
+    "FI": "TRANSLATE"
+  },
+  "msg_remote_1": {
+    "NL": "TRANSLATE",
+    "DE": "Es nehmen Trainer aus der Ferne teil. Bitte den ",
+    "EN": "There are remote raiders. Please use the ",
+    "IT": "TRANSLATE",
+    "PT-BR": "TRANSLATE",
+    "RU": "TRANSLATE",
+    "NO": "TRANSLATE",
+    "FR": "TRANSLATE",
+    "PL": "TRANSLATE",
+    "FI": "TRANSLATE"
+  },
+  "msg_remote_2": {
+    "NL": "TRANSLATE",
+    "DE": "-Button verwenden, wenn du bereit zum starten bist.",
+    "EN": "-button if you are ready.",
+    "IT": "TRANSLATE",
+    "PT-BR": "TRANSLATE",
+    "RU": "TRANSLATE",
+    "NO": "TRANSLATE",
+    "FR": "TRANSLATE",
+    "PL": "TRANSLATE",
+    "FI": "TRANSLATE"
   }
 }

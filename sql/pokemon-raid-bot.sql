@@ -26,6 +26,7 @@ CREATE TABLE `attendance` (
   `invite` tinyint(1) unsigned DEFAULT '0',
   `pokemon` varchar(20) DEFAULT '0',
   `alarm` tinyint(1) unsigned DEFAULT '0',
+  `remote` tinyint(1) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `raid_id` (`raid_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -134,4 +135,3 @@ CREATE TABLE `users` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

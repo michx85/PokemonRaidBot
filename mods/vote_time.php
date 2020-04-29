@@ -9,7 +9,7 @@ debug_log('vote_time()');
 // Check if the user has voted for this raid before.
 $rs = my_query(
     "
-    SELECT    user_id
+    SELECT    user_id, remote
     FROM      attendance
       WHERE   raid_id = {$data['id']}
         AND   user_id = {$update['callback_query']['from']['id']}
@@ -40,6 +40,8 @@ if($arg == 0) {
 $now = new DateTime('now', new DateTimeZone('UTC'));
 $now = $now->format('Y-m-d H:i') . ':00';
 
+if($answer['remote'] == 1)
+  checkRemote($update['callback_query']['from']['id'], $data['id'], $attend_time,$update['callback_query']['id'],0);
 // Vote time in the future or Raid anytime?
 if($now <= $attend_time || $arg == 0) {
     // User has voted before.
@@ -79,7 +81,7 @@ if($now <= $attend_time || $arg == 0) {
 }
 
 // Send vote response.
-   if($config->RAID_PICTURE) {
+	if($config->RAID_PICTURE) {
 	    send_response_vote($update, $data,false,false);
     } else {
 	    send_response_vote($update, $data);

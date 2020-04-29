@@ -237,11 +237,15 @@ function get_raid($raid_id)
         "
     );
 
+
+
     // Get the row.
     $raid = $rs->fetch_assoc();
 
     // Inject raid level
     $raid['level'] = get_raid_level($raid['pokemon']);
+
+
 
     debug_log($raid);
 
@@ -333,7 +337,7 @@ function get_pokemon_id_by_name($pokemon_name)
     } else if (strpos($pokemon_name, ',') !== false) {
         $delimiter = ',';
     }
-    
+
     // Explode if delimiter was found.
     $poke_name = $pokemon_name;
     if($delimiter != '') {
@@ -367,7 +371,7 @@ function get_pokemon_id_by_name($pokemon_name)
         // Try English language as fallback to get the pokemon id.
         $str = file_get_contents(CORE_LANG_PATH . '/pokemon_' . strtolower(DEFAULT_LANGUAGE) . '.json');
         $json = json_decode($str, true);
-    
+
         // Search pokemon name in json
         $key = array_search(ucfirst($poke_name), $json);
         if($key !== FALSE) {
@@ -452,10 +456,10 @@ function get_local_pokemon_name($pokemon_id_form, $override_language = false)
     // Get eggs from normal translation.
     if(in_array($pokedex_id, $eggs)) {
         $pokemon_name = $getTypeTranslation('egg_' . substr($pokedex_id, -1));
-    } else if ($pokemon_form != 'normal') { 
+    } else if ($pokemon_form != 'normal') {
         $pokemon_name = $getTypeTranslation('pokemon_id_' . $pokedex_id);
         $pokemon_name = (!empty($pokemon_name)) ? ($pokemon_name . SP . $getTypeTranslation('pokemon_form_' . $pokemon_form)) : '';
-    } else { 
+    } else {
         $pokemon_name = $getTypeTranslation('pokemon_id_' . $pokedex_id);
     }
 
@@ -743,6 +747,38 @@ function get_pokemon_weather($pokemon_id_form)
 }
 
 /**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  * Get weather icons.
  * @param $weather_value
  * @return string
@@ -783,7 +819,7 @@ function get_user($user_id)
     // Get user details.
     $rs = my_query(
         "
-        SELECT    * 
+        SELECT    *
                 FROM      users
                   WHERE   user_id = {$user_id}
         "
@@ -917,7 +953,7 @@ function raid_edit_gyms_first_letter_keys($action = 'raid_by_gym', $hidden = fal
         $rs = my_query(
                 "
                 SELECT CASE $case
-                ELSE UPPER(LEFT(gym_name, 1)) 
+                ELSE UPPER(LEFT(gym_name, 1))
                 END       AS first_letter
                 FROM      gyms
                 WHERE     show_gym = {$show_gym}
@@ -1015,7 +1051,7 @@ function raid_edit_gym_keys($first, $warn = true, $action = 'edit_raidlevel', $d
                   CASE WHEN SUM($exraid_exclude raids.end_time > UTC_TIMESTAMP() - INTERVAL 10 MINUTE) THEN 1 ELSE 0 END AS active_raid
         FROM      gyms
         LEFT JOIN raids
-        ON        raids.gym_id = gyms.id 
+        ON        raids.gym_id = gyms.id
         LEFT JOIN pokemon
         ON        raids.pokemon = CONCAT(pokemon.pokedex_id, '-', pokemon.pokemon_form)
         WHERE     UPPER(LEFT(gym_name, $first_length)) = UPPER('{$first}')
@@ -1124,7 +1160,7 @@ function raid_get_gyms_list_keys($searchterm)
             );
         }
     }
-    
+
     // Add abort key.
     if($keys) {
         // Get the inline key array.
@@ -1295,7 +1331,7 @@ function weather_keys($pokedex_id, $action, $arg)
     // Save and reset values
     $save_arg = 'save-' . $weather_value;
     $reset_arg = $weather_add . '0';
-    
+
     // Init empty keys array.
     $keys = [];
 
@@ -1326,7 +1362,7 @@ function weather_keys($pokedex_id, $action, $arg)
             $keys[] = array(
                 'text'          => $GLOBALS['weather'][$i],
                 'callback_data' => $pokedex_id . ':' . $action . ':' . $new_weather
-            ); 
+            );
         }
     }
 
@@ -1366,7 +1402,7 @@ function cp_keys($pokedex_id, $action, $arg)
     // Save and reset values
     $save_arg = $cp_type_level . '-save-' . $old_cp;
     $reset_arg = $cp_add . '0';
-    
+
     // Init empty keys array.
     $keys = [];
 
@@ -1426,7 +1462,7 @@ function cp_keys($pokedex_id, $action, $arg)
         } else {
             $new_cp = $reset_arg;
         }
-        
+
         // Set keys.
         $keys[] = array(
             'text'          => '0',
@@ -1471,7 +1507,7 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
 
         // Get raid times.
         $raid = get_raid($raid_id);
-    
+
 	// Init found.
 	$found = false;
 
@@ -1494,7 +1530,7 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
             	    debug_log('Cleanup preparation info is already in database!');
 		    $found = true;
 		    break;
-		} 
+		}
 	    }
 	}
 
@@ -1510,7 +1546,7 @@ function insert_cleanup($chat_id, $message_id, $raid_id)
                               message_id = '{$message_id}'
                 "
             );
-	} 
+	}
     } else {
         debug_log('Invalid input for cleanup preparation!');
     }
@@ -1552,11 +1588,11 @@ function run_cleanup ($telegram = 2, $database = 2) {
             // Get cleanup info.
             $rs = my_query(
                 "
-                SELECT    * 
+                SELECT    *
                 FROM      cleanup
                   WHERE   chat_id <> 0
                   ORDER BY id DESC
-                  LIMIT 0, 250     
+                  LIMIT 0, 250
                 ", true
             );
         // Query for database cleanup without telegram cleanup
@@ -1564,7 +1600,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
             // Get cleanup info.
             $rs = my_query(
                 "
-                SELECT    * 
+                SELECT    *
                 FROM      cleanup
                   WHERE   chat_id = 0
                   LIMIT 0, 250
@@ -1575,7 +1611,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
             // Get cleanup info for telegram cleanup.
             $rs = my_query(
                 "
-                SELECT    * 
+                SELECT    *
                 FROM      cleanup
                   WHERE   chat_id <> 0
                   ORDER BY id DESC
@@ -1586,7 +1622,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
             // Get cleanup info for database cleanup.
             $rs_db = my_query(
                 "
-                SELECT    * 
+                SELECT    *
                 FROM      cleanup
                   WHERE   chat_id = 0
                   LIMIT 0, 250
@@ -1645,8 +1681,8 @@ function run_cleanup ($telegram = 2, $database = 2) {
                 my_query(
                 "
                     UPDATE    cleanup
-                    SET       chat_id = 0, 
-                              message_id = 0 
+                    SET       chat_id = 0,
+                              message_id = 0
                     WHERE   id = {$row['id']}
                 ", true
                 );
@@ -1661,13 +1697,13 @@ function run_cleanup ($telegram = 2, $database = 2) {
                 $now = utcnow('YmdHis');
                 $log_now = utcnow();
 
-	        // Set cleanup time for telegram. 
+	        // Set cleanup time for telegram.
                 $cleanup_time_tg = new DateTimeImmutable($raid['end_time'], new DateTimeZone('UTC'));
                 $cleanup_time_tg = $cleanup_time_tg->add(new DateInterval("PT".$config->CLEANUP_TIME_TG."M"));
                 $clean_tg = $cleanup_time_tg->format('YmdHis');
                 $log_clean_tg = $cleanup_time_tg->format('Y-m-d H:i:s');
 
-	        // Set cleanup time for database. 
+	        // Set cleanup time for database.
                 $cleanup_time_db = new DateTimeImmutable($raid['end_time'], new DateTimeZone('UTC'));
                 $cleanup_time_db = $cleanup_time_db->add(new DateInterval("PT".$config->CLEANUP_TIME_DB."M"));
                 $clean_db = $cleanup_time_db->format('YmdHis');
@@ -1692,8 +1728,8 @@ function run_cleanup ($telegram = 2, $database = 2) {
 		    my_query(
     		    "
     		        UPDATE    cleanup
-    		        SET       chat_id = 0, 
-    		                  message_id = 0 
+    		        SET       chat_id = 0,
+    		                  message_id = 0
       		        WHERE   id = {$row['id']}
 		    ", true
 		    );
@@ -1728,7 +1764,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                     my_query(
                     "
                         UPDATE    cleanup
-                        SET       raid_id = 0, 
+                        SET       raid_id = 0,
 				  cleaned = {$row['raid_id']}
                         WHERE   raid_id = {$row['raid_id']}
                     ", true
@@ -1752,7 +1788,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
                         WHERE   id = {$row['cleaned']}
                     ", true
                     );
-		    
+
 		    // Get all cleanup jobs which will be deleted now.
                     cleanup_log('Removing cleanup info from database:');
 		    $rs_cl = my_query(
@@ -1785,7 +1821,7 @@ function run_cleanup ($telegram = 2, $database = 2) {
 	    } else {
 		cleanup_log('Skipping cleanup of database for this raid! Cleanup time has not yet come...');
 	    }
-	
+
 	    // Store current raid id as previous id for next loop
             $prev_raid_id = $current_raid_id;
         }
@@ -1805,7 +1841,7 @@ function keys_trainerinfo($show = false)
     global $config;
     // Toggle state.
     $status = 'show';
-    if($show || !$config->TRAINER_BUTTONS_TOGGLE) { 
+    if($show || !$config->TRAINER_BUTTONS_TOGGLE) {
         // Always show buttons?
         if(($show == true && !$config->TRAINER_BUTTONS_TOGGLE) || $config->TRAINER_BUTTONS_TOGGLE) {
             $status = 'hide';
@@ -1880,6 +1916,8 @@ function keys_vote($raid)
     debug_log($end_time, 'UTC END:');
     debug_log($start_time, 'UTC START:');
 
+
+
     // Extra Keys
     $buttons_extra = [
         [
@@ -1940,19 +1978,24 @@ function keys_vote($raid)
     if($config->RAID_VOTE_ICONS && !$config->RAID_VOTE_TEXT) {
         $text_here = EMOJI_HERE;
         $text_late = EMOJI_LATE;
+		$text_remote = EMOJI_REMOTE;
         $text_done = TEAM_DONE;
         $text_cancel = TEAM_CANCEL;
+
     // Icon + text.
     } else if($config->RAID_VOTE_ICONS && $config->RAID_VOTE_TEXT) {
         $text_here = EMOJI_HERE . getPublicTranslation('here');
         $text_late = EMOJI_LATE . getPublicTranslation('late');
+        $text_remote = EMOJI_REMOTE . getPublicTranslation('remote');
         $text_done = TEAM_DONE . getPublicTranslation('done');
         $text_cancel = TEAM_CANCEL . getPublicTranslation('cancellation');
+
     // Text.
     } else {
         $text_here = getPublicTranslation('here');
         $text_late = getPublicTranslation('late');
         $text_done = getPublicTranslation('done');
+		$text_done = getPublicTranslation('remote');
         $text_cancel = getPublicTranslation('cancellation');
     }
 
@@ -1975,9 +2018,13 @@ function keys_vote($raid)
                 'text'          => $text_late,
                 'callback_data' => $raid['id'] . ':vote_status:late'
             ],
-            [
+            /* [
                 'text'          => $text_done,
                 'callback_data' => $raid['id'] . ':vote_status:raid_done'
+            ], */
+            [
+                'text'          => $text_remote,
+                'callback_data' => $raid['id'] . ':vote_status:remote'
             ],
             [
                 'text'          => $text_cancel,
@@ -2040,7 +2087,7 @@ function keys_vote($raid)
             // Add $config->RAID_FIRST_START minutes to five minutes slot
             //$five_plus_slot = new DateTime($five_slot, new DateTimeZone('UTC'));
             $five_plus_slot = $five_slot;
-            $five_plus_slot = $five_plus_slot->add(new DateInterval("PT".$config->RAID_FIRST_START."M")); 
+            $five_plus_slot = $five_plus_slot->add(new DateInterval("PT".$config->RAID_FIRST_START."M"));
 
             // Get first regular raidslot
 	    // Get minute and convert modulo raidslot
@@ -2055,7 +2102,7 @@ function keys_vote($raid)
                 $diff = $config->RAID_SLOTS - $minute;
                 // Add difference
                 $first_slot = $first_slot->add(new DateInterval("PT".$diff."M"));
-            } 
+            }
 
             // Compare times slots to add them to keys.
             // Example Scenarios:
@@ -2272,7 +2319,7 @@ function keys_vote($raid)
             //$time_to_last_slot = $last_extra_slot->diff($last_slot)->format("%a");
 
             // Last extra slot not conflicting with last slot and time to last regular slot larger than RAID_LAST_START?
-            //if($last_extra_slot > $last_slot && $time_to_last_slot > $config->RAID_LAST_START) 
+            //if($last_extra_slot > $last_slot && $time_to_last_slot > $config->RAID_LAST_START)
 
             // Log last and last extra slot.
             debug_log($last_slot, 'Last slot:');
@@ -2339,7 +2386,21 @@ function keys_vote($raid)
             debug_log('Participants for raid with ID ' . $raid['id'] . ': ' . $count_pp);
             debug_log('Participants who voted for any pokemon: ' . $count_any_pokemon);
             debug_log('Participants who voted for ' . $raid_pokemon . ': ' . $count_raid_pokemon);
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             // Zero Participants? Show only time buttons!
             if($count_pp == 0) {
                 $keys = $buttons_time;
@@ -2353,7 +2414,7 @@ function keys_vote($raid)
                 if(!in_array($raid_pokemon_id, $GLOBALS['eggs'])) {
                     // Make sure we either have no participants
                     // OR all participants voted for "any" raid boss
-                    // OR all participants voted for the hatched raid boss 
+                    // OR all participants voted for the hatched raid boss
                     // OR all participants voted for "any" or the hatched raid boss
                     if($count_pp == 0 || $count_pp == $count_any_pokemon || $count_pp == $count_raid_pokemon || $count_pp == ($count_any_pokemon + $count_raid_pokemon)) {
                         $show_keys = false;
@@ -2371,7 +2432,7 @@ function keys_vote($raid)
                         "
                     );
 
-                    // Init counter. 
+                    // Init counter.
                     $count = 0;
 
                     // Get eggs.
@@ -2404,6 +2465,13 @@ function keys_vote($raid)
                         $buttons_pokemon = [];
                     }
                 }
+
+
+
+
+
+
+
 
                 // Init keys array
                 $keys = [];
@@ -2554,26 +2622,26 @@ function send_response_vote($update, $data, $new = false, $text = true)
  * @param $show
  */
 function send_trainerinfo($update, $show = false)
-{   
+{
     // Get text and keys.
     $msg = show_trainerinfo($update, $show);
     $keys = keys_trainerinfo($show);
-    
+
     // Write to log.
     // debug_log($keys);
-    
+
     // Change message string.
     $callback_msg = getPublicTranslation('updated');
-        
+
     // Telegram JSON array.
     $tg_json = array();
-        
+
     // Answer the callback.
     $tg_json[] = answerCallbackQuery($update['callback_query']['id'], $callback_msg, true, true);
-        
+
     // Edit the message.
     $tg_json[] = edit_message($update, $msg, $keys, ['disable_web_page_preview' => 'true'], true);
-    
+
     // Telegram multicurl request.
     curl_json_multi_request($tg_json);
 
@@ -2594,6 +2662,23 @@ function send_vote_time_first($update)
     answerCallbackQuery($update['callback_query']['id'], $msg);
 
     exit();
+}
+
+/**
+ * Check if too much remote Raiders.
+ * @param $update
+ */
+function checkRemote($user, $raid, $attendtime,$cbi, $plus = 0)
+{
+  global $config;
+  $cnt_remote = my_query("SELECT MAX(cnt_remote) AS cnt_remote FROM (SELECT SUM(extra_mystic)+SUM(extra_valor)+SUM(extra_instinct)+SUM(remote) AS cnt_remote FROM attendance WHERE (raid_id = {$raid} AND remote = 1 AND attend_time = '{$attendtime}') OR (raid_id = {$raid} AND user_id = {$user}) GROUP by pokemon) AS p ");
+  $countanswer = $cnt_remote->fetch_assoc();
+  $sum = $countanswer['cnt_remote']+$plus ;
+  if($sum > $config->MAX_REMOTE)
+  {
+    answerCallbackQuery($cbi, getPublicTranslation('max_remote'). $config->MAX_REMOTE);
+    die();
+  }
 }
 
 /**
@@ -2663,7 +2748,7 @@ function delete_trainerinfo($chat_id, $message_id)
     debug_log('Deleting trainer information from database for Chat_ID: ' . $chat_id);
     $rs = my_query(
         "
-        DELETE FROM   trainerinfo 
+        DELETE FROM   trainerinfo
         WHERE   chat_id = '{$chat_id}'
         "
     );
@@ -2723,7 +2808,7 @@ function delete_overview($chat_id, $message_id)
     debug_log('Deleting overview information from database for Chat_ID: ' . $chat_id);
     $rs = my_query(
         "
-        DELETE FROM   overview 
+        DELETE FROM   overview
         WHERE   chat_id = '{$chat_id}'
         "
     );
@@ -2767,7 +2852,7 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
 
     // Current time.
     $now = utcnow();
-    
+
     // Any active raids currently?
     if (empty($raids_active)) {
         // Init keys.
@@ -2786,7 +2871,16 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             $chat_id = $row_overview['chat_id'];
             $message_id = $row_overview['message_id'];
 
+
+
             $chat_title = get_chat_title($row_overview['chat_id']);
+
+
+
+
+
+
+
 
             // Set the message.
             $msg = '<b>' . getPublicTranslation('raid_overview_for_chat') . ' ' . $chat_title . ' '. getPublicTranslation('from') .' '. dt2time('now') . '</b>' .  CR . CR;
@@ -2819,7 +2913,7 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             // Telegram multicurl request.
             curl_json_multi_request($tg_json);
         }
-    
+
         // Exit here.
         exit;
     }
@@ -2860,8 +2954,8 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
         if ($previous !== 'FIRST_RUN' && $previous !== $current) {
             // Add keys.
 	    $keys = [];
-        
-            //Add custom message from the config.	
+
+            //Add custom message from the config.
             if (!empty($config->RAID_PIN_MESSAGE)) {
                 $msg .= $config->RAID_PIN_MESSAGE . CR;
             }
@@ -2940,7 +3034,7 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
                 // Refresh overview messages.
                 $keys = [];
 
-                // Get active overviews 
+                // Get active overviews
                 $rs = my_query(
                     "
                     SELECT    message_id
@@ -3027,7 +3121,7 @@ function get_overview($update, $chats_active, $raids_active, $action = 'refresh'
             // Add time left message.
             $msg .= $pokemon . ' — <b>' . getPublicTranslation('still') . SP . $time_left . 'h</b>' . CR;
         }
-        
+
         if ( $raid_id ) {
 
         // Count attendances
@@ -3112,7 +3206,7 @@ function delete_raid($raid_id)
     $rs_cleanup = my_query(
         "
         DELETE FROM   cleanup
-        WHERE   raid_id = '{$raid_id}' 
+        WHERE   raid_id = '{$raid_id}'
            OR   cleaned = '{$raid_id}'
         "
     );
@@ -3121,7 +3215,7 @@ function delete_raid($raid_id)
     debug_log('Deleting raid ' . $raid_id . ' from the attendance table:');
     $rs_attendance = my_query(
         "
-        DELETE FROM   attendance 
+        DELETE FROM   attendance
         WHERE  raid_id = '{$raid_id}'
         "
     );
@@ -3130,7 +3224,7 @@ function delete_raid($raid_id)
     debug_log('Deleting raid ' . $raid_id . ' from the raid table:');
     $rs_raid = my_query(
         "
-        DELETE FROM   raids 
+        DELETE FROM   raids
         WHERE   id = '{$raid_id}'
         "
     );
@@ -3272,10 +3366,10 @@ function show_raid_poll($raid)
     // Get current pokemon
     $raid_pokemon = $raid['pokemon'];
     $raid_pokemon_id = explode('-',$raid_pokemon)[0];
-    
+
     // Get raid level
     $raid_level = get_raid_level($raid_pokemon);
-        
+
     // Get raid times.
     $msg = raid_poll_message($msg, get_raid_times($raid), true);
 /*
@@ -3316,7 +3410,7 @@ function show_raid_poll($raid)
         // Get the address.
         $addr = get_address($raid['lat'], $raid['lon']);
         $address = format_address($addr);
-		
+
         //Only store address if not empty
         if(!empty($address)) {
             my_query(
@@ -3325,13 +3419,13 @@ function show_raid_poll($raid)
 	            SET     address = '{$address}'
 	            WHERE   id = {$raid['gym_id']}
 	            "
-            );    
+            );
             //Use new address
 	    $msg = raid_poll_message($msg, '<a href="https://maps.google.com/?daddr=' . $raid['lat'] . ',' . $raid['lon'] . '">' . $address . '</a>' . CR);
         } else {
             //If no address is found show maps link
             $msg = raid_poll_message($msg, '<a href="http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '">http://maps.google.com/maps?q=' . $raid['lat'] . ',' . $raid['lon'] . '</a>' . CR);
-        }	
+        }
     }
 
     // Display raid boss name.
@@ -3342,8 +3436,20 @@ function show_raid_poll($raid)
         $pokemon_weather = get_pokemon_weather($raid['pokemon']);
         $msg = raid_poll_message($msg, ($pokemon_weather != 0) ? (' ' . get_weather_icons($pokemon_weather)) : '', true);
         $msg = raid_poll_message($msg, CR, true);
+
+
+
+
+
+
+
+
+
+
+
+
     //}
-    
+
     // Display attacks.
     if ($raid['move1'] > 1 && $raid['move2'] > 2 ) {
         $msg = raid_poll_message($msg, getPublicTranslation('pokemon_move_' . $raid['move1']) . '/' . getPublicTranslation('pokemon_move_' . $raid['move2']));
@@ -3365,7 +3471,7 @@ function show_raid_poll($raid)
     // 1 - Grouped by attend_time
     $rs_cnt = my_query(
         "
-        SELECT DISTINCT DATE_FORMAT(attend_time, '%Y%m%d%H%i%s') AS ts_att, 
+        SELECT DISTINCT DATE_FORMAT(attend_time, '%Y%m%d%H%i%s') AS ts_att,
                         count(attend_time)          AS count,
                         sum(team = 'mystic')        AS count_mystic,
                         sum(team = 'valor')         AS count_valor,
@@ -3375,6 +3481,7 @@ function show_raid_poll($raid)
                         sum(extra_valor)            AS extra_valor,
                         sum(extra_instinct)         AS extra_instinct,
                         sum(IF(late = '1', (late = '1') + extra_mystic + extra_valor + extra_instinct, 0)) AS count_late,
+						sum(IF(remote = '1', (remote = '1') + extra_mystic + extra_valor + extra_instinct, 0)) AS count_remote,
                         sum(pokemon = '0')                   AS count_any_pokemon,
                         sum(pokemon = '{$raid['pokemon']}')  AS count_raid_pokemon,
                         sum(pokemon != '{$raid['pokemon']}' AND pokemon != '0')  AS count_other_pokemon,
@@ -3397,11 +3504,13 @@ function show_raid_poll($raid)
     $cnt = [];
     $cnt_all = 0;
     $cnt_latewait = 0;
+	$cnt_remote = 0;
 
     while ($cnt_row = $rs_cnt->fetch_assoc()) {
         $cnt[$cnt_row['ts_att']] = $cnt_row;
         $cnt_all = $cnt_all + $cnt_row['count'];
         $cnt_latewait = $cnt_latewait + $cnt_row['count_late'];
+		$cnt_remote = $cnt_remote + $cnt_row['count_remote'];
     }
 
     // Write to log.
@@ -3445,10 +3554,35 @@ function show_raid_poll($raid)
         // Show message that voting is not possible!
         $msg = raid_poll_message($msg, CR . '<b>' . getPublicTranslation('raid_info_no_voting') . '</b> ' . CR);
     } else {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Gym note?
         if(!empty($raid['gym_note'])) {
             $msg = raid_poll_message($msg, EMOJI_INFO . SP . $raid['gym_note'] . CR);
         }
+
 
         // Add Ex-Raid Message if Pokemon is in Ex-Raid-List.
         if($raid_level == 'X') {
@@ -3461,7 +3595,7 @@ function show_raid_poll($raid)
             // 2 - Grouped by attend_time and pokemon
             $rs_cnt_pokemon = my_query(
                 "
-                SELECT DISTINCT DATE_FORMAT(attend_time, '%Y%m%d%H%i%s') AS ts_att, 
+                SELECT DISTINCT DATE_FORMAT(attend_time, '%Y%m%d%H%i%s') AS ts_att,
                                 count(attend_time)          AS count,
                                 sum(team = 'mystic')        AS count_mystic,
                                 sum(team = 'valor')         AS count_valor,
@@ -3470,6 +3604,7 @@ function show_raid_poll($raid)
                                 sum(extra_mystic)           AS extra_mystic,
                                 sum(extra_valor)            AS extra_valor,
                                 sum(extra_instinct)         AS extra_instinct,
+								sum(IF(remote = '1', (remote = '1') + extra_mystic + extra_valor + extra_instinct, 0)) AS count_remote,
                                 sum(IF(late = '1', (late = '1') + extra_mystic + extra_valor + extra_instinct, 0)) AS count_late,
                                 sum(pokemon = '0')                   AS count_any_pokemon,
                                 sum(pokemon = '{$raid['pokemon']}')  AS count_raid_pokemon,
@@ -3502,6 +3637,7 @@ function show_raid_poll($raid)
             $rs_att = my_query(
                 "
                 SELECT      attendance.*,
+
                             users.name,
                             users.level,
                             users.team,
@@ -3528,15 +3664,28 @@ function show_raid_poll($raid)
 
             // For each attendance.
             while ($row = $rs_att->fetch_assoc()) {
+
+
+
+
+
+
+
                 // Set current attend time and pokemon
                 $current_att_time = $row['ts_att'];
                 $dt_att_time = dt2time($row['attend_time']);
                 $current_pokemon = $row['pokemon'];
 
+
+
                 // Add hint for late attendances.
                 if($config->RAID_LATE_MSG && $previous_att_time == 'FIRST_RUN' && $cnt_latewait > 0) {
                     $late_wait_msg = str_replace('RAID_LATE_TIME', $config->RAID_LATE_TIME, getPublicTranslation('late_participants_wait'));
                     $msg = raid_poll_message($msg, CR . EMOJI_LATE . '<i>' . getPublicTranslation('late_participants') . ' ' . $late_wait_msg . '</i>' . CR);
+                }
+
+				if($previous_att_time == 'FIRST_RUN' && $cnt_remote > 0) {
+                    $msg = raid_poll_message($msg, CR . EMOJI_REMOTE . getPublicTranslation('msg_remote_1'). EMOJI_HERE. getPublicTranslation('msg_remote_2') . CR);
                 }
 
                 // Add section/header for time
@@ -3555,6 +3704,7 @@ function show_raid_poll($raid)
                         $count_valor = $cnt[$current_att_time]['count_valor'] + $cnt[$current_att_time]['extra_valor'];
                         $count_instinct = $cnt[$current_att_time]['count_instinct'] + $cnt[$current_att_time]['extra_instinct'];
                         $count_late = $cnt[$current_att_time]['count_late'];
+						$count_remote = $cnt[$current_att_time]['count_remote'];
 
                         // Add to message.
                         $msg = raid_poll_message($msg, ' — ');
@@ -3563,6 +3713,7 @@ function show_raid_poll($raid)
                         $msg = raid_poll_message($msg, (($count_instinct > 0) ? TEAM_Y . $count_instinct . '  ' : ''));
                         $msg = raid_poll_message($msg, (($cnt[$current_att_time]['count_no_team'] > 0) ? TEAM_UNKNOWN . $cnt[$current_att_time]['count_no_team'] . '  ' : ''));
                         $msg = raid_poll_message($msg, (($count_late > 0) ? EMOJI_LATE . $count_late . '  ' : ''));
+						$msg = raid_poll_message($msg, (($count_remote > 0) ? EMOJI_REMOTE . $count_remote . '/ '.$config->MAX_REMOTE : ''));
                     }
                     $msg = raid_poll_message($msg, CR);
                 }
@@ -3586,6 +3737,7 @@ function show_raid_poll($raid)
                         $poke_count_valor = $current_att_time_poke['count_valor'] + $current_att_time_poke['extra_valor'];
                         $poke_count_instinct = $current_att_time_poke['count_instinct'] + $current_att_time_poke['extra_instinct'];
                         $poke_count_late = $current_att_time_poke['count_late'];
+						$poke_count_remote = $current_att_time_poke['count_remote'];
 
                         // Add to message.
                         $msg = raid_poll_message($msg, ' [' . ($current_att_time_poke['count'] + $count_att_time_poke_extrapeople) . '] — ');
@@ -3594,12 +3746,17 @@ function show_raid_poll($raid)
                         $msg = raid_poll_message($msg, (($poke_count_instinct > 0) ? TEAM_Y . $poke_count_instinct . '  ' : ''));
                         $msg = raid_poll_message($msg, (($current_att_time_poke['count_no_team'] > 0) ? TEAM_UNKNOWN . ($current_att_time_poke['count_no_team']) : ''));
                         $msg = raid_poll_message($msg, (($poke_count_late > 0) ? EMOJI_LATE . $poke_count_late . '  ' : ''));
+						$msg = raid_poll_message($msg, (($poke_count_remote > 0) ? EMOJI_REMOTE . $poke_count_remote . '  ' : ''));
                         $msg = raid_poll_message($msg, CR);
                     }
                 }
 
                 // Add users: ARRIVED --- TEAM -- LEVEL -- NAME -- INVITE -- EXTRAPEOPLE
-                $msg = raid_poll_message($msg, ($row['arrived']) ? (EMOJI_HERE . ' ') : (($row['late']) ? (EMOJI_LATE . ' ') : '└ '));
+
+				$count_remote = $cnt[$current_att_time]['count_remote'];
+
+                $msg = raid_poll_message($msg, ($row['arrived']) ? (EMOJI_HERE . ' ') : (($row['late']) ? (EMOJI_LATE . ' ') : (EMOJI_PLUS . ' ')));
+                $msg = raid_poll_message($msg, ($row['remote']) ? (EMOJI_REMOTE . ' ') :  (($count_remote > 0) ? (EMOJI_WALK . ' ') : ''));
                 $msg = raid_poll_message($msg, ($row['team'] === NULL) ? ($GLOBALS['teams']['unknown'] . ' ') : ($GLOBALS['teams'][$row['team']] . ' '));
                 $msg = raid_poll_message($msg, ($row['level'] == 0) ? ('<b>00</b> ') : (($row['level'] < 10) ? ('<b>0' . $row['level'] . '</b> ') : ('<b>' . $row['level'] . '</b> ')));
                 $msg = raid_poll_message($msg, '<a href="tg://user?id=' . $row['user_id'] . '">' . htmlspecialchars($row['name']) . '</a> ');
@@ -3611,7 +3768,7 @@ function show_raid_poll($raid)
 
                 // Prepare next result
                 $previous_att_time = $current_att_time;
-                $previous_pokemon = $current_pokemon; 
+                $previous_pokemon = $current_pokemon;
             }
         }
 
@@ -3653,7 +3810,7 @@ function show_raid_poll($raid)
                 $cnt_done = $cnt_done + $cnt_cancel_done['count_done'] = $cnt_row_cancel_done['count_done'] + $cnt_row_cancel_done['extra_mystic'] + $cnt_row_cancel_done['extra_valor'] + $cnt_row_cancel_done['extra_instinct'];
             }
         }
-    
+
         // Write to log.
         debug_log($cnt_cancel, 'Cancel count:');
         debug_log($cnt_done, 'Done count:');
@@ -3664,6 +3821,7 @@ function show_raid_poll($raid)
             $rs_att = my_query(
                 "
                 SELECT      attendance.*,
+
                             users.name,
                             users.level,
                             users.team,
@@ -3687,6 +3845,13 @@ function show_raid_poll($raid)
 
             // For each canceled / done.
             while ($row = $rs_att->fetch_assoc()) {
+
+
+
+
+
+
+
                 // Attend time.
                 $dt_att_time = dt2time($row['attend_time']);
 
@@ -3714,7 +3879,7 @@ function show_raid_poll($raid)
                 $msg = raid_poll_message($msg, ($row['extra_instinct']) ? ('+' . $row['extra_instinct'] . TEAM_Y . ' ') : '');
                 $msg = raid_poll_message($msg, CR);
             }
-        } 
+        }
 
         // Add no attendance found message.
         if ($cnt_all + $cnt_cancel + $cnt_done == 0) {
@@ -3725,8 +3890,8 @@ function show_raid_poll($raid)
     //Add custom message from the config.
     if (!empty($config->MAP_URL)) {
         $msg = raid_poll_message($msg, CR . $config->MAP_URL);
-    }	
-	
+    }
+
     // Display creator.
     $msg = raid_poll_message($msg, ($raid['user_id'] && $raid['name']) ? (CR . getPublicTranslation('created_by') . ': <a href="tg://user?id=' . $raid['user_id'] . '">' . htmlspecialchars($raid['name']) . '</a>') : '');
 
@@ -3860,8 +4025,8 @@ function raid_list($update)
 
     // Init raid id.
     $iqq = 0;
-   
-    // Botname:raid_id received? 
+
+    // Botname:raid_id received?
     if (substr_count($update['inline_query']['query'], ':') == 1) {
         // Botname: received, is there a raid_id after : or not?
         if(strlen(explode(':', $update['inline_query']['query'])[1]) != 0) {
@@ -3978,7 +4143,7 @@ function curl_json_response($json_response, $json)
             // Write to log that message was shared with channel or supergroup
             debug_log('Message was shared with ' . $response['result']['chat']['type'] . ' ' . $response['result']['chat']['title']);
             debug_log('Checking input for cleanup info now...');
-            
+
 	    // Check if callback_data is present to get the cleanup id
             if (!empty($response['result']['reply_markup']['inline_keyboard']['0']['0']['callback_data'])) {
                 debug_log('Callback Data of this message likely contains cleanup info!');
