@@ -1936,7 +1936,11 @@ function keys_vote($raid)
             [
                 'text'          => '+ ' . TEAM_Y,
                 'callback_data' => $raid['id'] . ':vote_extra:instinct'
-            ]
+            ],
+            [
+                'text'          => $text_remote,
+                'callback_data' => $raid['id'] . ':vote_status:remote'
+            ],
         ]
     ];
 
@@ -2018,13 +2022,9 @@ function keys_vote($raid)
                 'text'          => $text_late,
                 'callback_data' => $raid['id'] . ':vote_status:late'
             ],
-            /* [
+            [
                 'text'          => $text_done,
                 'callback_data' => $raid['id'] . ':vote_status:raid_done'
-            ], */
-            [
-                'text'          => $text_remote,
-                'callback_data' => $raid['id'] . ':vote_status:remote'
             ],
             [
                 'text'          => $text_cancel,
@@ -2691,7 +2691,7 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ne
 
       if($attendtime == '')
         $attendtime = $ra['attend_time'];
-      
+
       $extra = $ra['extras']+$newextra;
       array_push($pkm, $ra['pokemon']);
 
