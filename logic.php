@@ -2668,11 +2668,11 @@ function send_vote_time_first($update)
  * Check if too much remote Raiders.
  * @param $update
  */
-function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $extra = 0)
+function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $newextra = 0)
 {
   global $config;
 
-  error_log("Start Remote Check");
+  error_log("Start Remote Check".$attendtime);
   // Aktuelle Daten ermitteln
   $rs = my_query(
       "
@@ -2688,10 +2688,11 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $ex
   $pkm = [];
   while ($ra = $rs->fetch_assoc())
   {
+    error_log("Zeit1".$attendtime);
       if($attendtime == '')
         $attendtime = $ra['attend_time'];
-
-      $extra = $ra['extras'];
+      error_log("Zeit2".$attendtime);
+      $extra = $ra['extras']+$newextra;
       array_push($pkm, $ra['pokemon']);
       error_log('data: '.json_encode($ra));
       error_log("Extra-".$extra);
