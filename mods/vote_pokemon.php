@@ -24,9 +24,10 @@ $count = 0;
 while ($row = $rs->fetch_assoc()) {
     $atts[] = $row;
     $count = $count + 1;
+    $remote = $row['remote'];
 }
 
-if($row['remote'] == 1)
+if($remote == 1)
   checkRemote($update['callback_query']['id'], $update['callback_query']['from']['id'], $data['id'], '',$data['arg']);
 
 // Write to log.
