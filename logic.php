@@ -2672,7 +2672,7 @@ function checkRemote($user, $raid, $attendtime,$cbi, $plus = 0)
 {
   global $config;
   $cnt_remote = my_query("SELECT MAX(cnt_remote) AS cnt_remote FROM (SELECT SUM(extra_mystic)+SUM(extra_valor)+SUM(extra_instinct)+SUM(remote) AS cnt_remote FROM attendance WHERE (raid_id = {$raid} AND remote = 1 AND attend_time = '{$attendtime}') OR (raid_id = {$raid} AND user_id = {$user}) GROUP by pokemon) AS p ");
-  error_log("SELECT MAX(cnt_remote) AS cnt_remote FROM (SELECT SUM(extra_mystic)+SUM(extra_valor)+SUM(extra_instinct)+SUM(remote) AS cnt_remote FROM attendance WHERE (raid_id = ".$raid." AND remote = 1 AND attend_time = '".$attendtime."') OR (raid_id = ".$raid." AND user_id = ".$user." GROUP by pokemon) AS p ")
+  error_log("SELECT MAX(cnt_remote) AS cnt_remote FROM (SELECT SUM(extra_mystic)+SUM(extra_valor)+SUM(extra_instinct)+SUM(remote) AS cnt_remote FROM attendance WHERE (raid_id = ".$raid." AND remote = 1 AND attend_time = '".$attendtime."') OR (raid_id = ".$raid." AND user_id = ".$user." GROUP by pokemon) AS p ");
   $countanswer = $cnt_remote->fetch_assoc();
   $sum = $countanswer['cnt_remote']+$plus ;
   if($sum > $config->MAX_REMOTE)
