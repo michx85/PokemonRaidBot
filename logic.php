@@ -2688,13 +2688,16 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
   $pkm = [];
   foreach ($raidanswer AS $ra)
   {
-      if($attendtime != '')
+      if($attendtime == '')
         $attendtime = $ra->attend_time;
 
       $extra += $ra->extras;
       array_push($pkm, $ra->pokemon);
+      error_log('PJ: '.$ra->pokemon);
+      error_log('data: '.json_encode($ra));
   }
-  array_push($pkm, $pokemon);
+  if($pkm != "")
+    array_push($pkm, $pokemon);
   // sich selbst mitzählen
   $trainer = 1 + $extra;
   error_log("Trainer: ".$trainer);
