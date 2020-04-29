@@ -2668,7 +2668,7 @@ function send_vote_time_first($update)
  * Check if too much remote Raiders.
  * @param $update
  */
-function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra = 0)
+function checkRemote($cbi, $user, $raid, $attendtime = '', $newpokemon = '', $extra = 0)
 {
   global $config;
 
@@ -2693,11 +2693,11 @@ function checkRemote($cbi, $user, $raid, $attendtime = '', $pokemon = '', $extra
 
       $extra += $ra->extras;
       array_push($pkm, $ra->pokemon);
-      error_log('PJ: '.$ra->pokemon);
+      error_log('PJ: '.$ra['pokemon']);
       error_log('data: '.json_encode($ra));
   }
-  if($pkm != "")
-    array_push($pkm, $pokemon);
+  if($newpokemon != "")
+    array_push($pkm, $newpokemon);
   // sich selbst mitzählen
   $trainer = 1 + $extra;
   error_log("Trainer: ".$trainer);
